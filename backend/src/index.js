@@ -15,10 +15,8 @@ import Project from './models/Project.js';
 
 const PORT = process.env.PORT || 4000;
 
-// Connect DB
 await connectDB(process.env.MONGODB_URI);
 
-// Sync indexes
 if (process.env.SYNC_INDEXES === 'true') {
   await Promise.all([Profile.syncIndexes(), Project.syncIndexes()]);
   console.log('MongoDB indexes synchronized');
@@ -26,7 +24,6 @@ if (process.env.SYNC_INDEXES === 'true') {
 
 const app = express();
 
-// ✅ Setup CORS
 const allowedOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
   .map((s) => s.trim())
@@ -37,11 +34,8 @@ const allowedSuffixes = (process.env.CORS_ORIGIN_SUFFIXES || '')
   .filter(Boolean);
 
 function isAllowedOrigin(origin) {
-  // No origin (e.g., curl, same-origin) -> allow
   if (!origin) return true;
-  // Exact match allowlist
   if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) return true;
-  // Suffix allowlist (e.g., .vercel.app)
   if (allowedSuffixes.length > 0) {
     try {
       const hostname = new URL(origin).hostname;
@@ -49,7 +43,6 @@ function isAllowedOrigin(origin) {
         return true;
       }
     } catch (_) {
-      // If URL parsing fails, fall back to plain endsWith on the full origin string
       if (allowedSuffixes.some((suf) => origin.endsWith(suf))) return true;
     }
   }
@@ -66,14 +59,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// ✅ Explicitly handle preflight requests
 app.options('*', cors(corsOptions));
-
-// ✅ Middlewares BEFORE routes
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
-// ✅ Routes
 app.get("/", (req, res) => {
   res.send("✅ Backend is running on Render!");
 });
@@ -83,7 +72,6 @@ app.use('/api/projects', projectsRouter);
 app.use('/api/skills', skillsRouter);
 app.use('/api/search', searchRouter);
 
-// ✅ Error handlers always last
 app.use(notFound);
 app.use(errorHandler);
 

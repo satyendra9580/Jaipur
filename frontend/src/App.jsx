@@ -34,7 +34,6 @@ export default function App() {
     boot();
   }, []);
 
-  // Auto-fetch projects whenever skill changes
   useEffect(() => {
     let cancelled = false;
     async function run() {

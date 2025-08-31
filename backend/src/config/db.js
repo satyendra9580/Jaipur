@@ -9,7 +9,6 @@ export default async function connectDB(uri) {
   mongoose.set('strictQuery', true);
   const isProd = process.env.NODE_ENV === 'production';
 
-  // Register listeners BEFORE connecting so we don't miss early events
   mongoose.connection.on('connected', () => console.log('MongoDB connected'));
   mongoose.connection.on('error', (err) => console.error('MongoDB error:', err));
   mongoose.connection.on('disconnected', () => console.warn('MongoDB disconnected'));
