@@ -31,22 +31,43 @@ const allowedOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
+const allowedSuffixes = (process.env.CORS_ORIGIN_SUFFIXES || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        return callback(null, true);
+function isAllowedOrigin(origin) {
+  // No origin (e.g., curl, same-origin) -> allow
+  if (!origin) return true;
+  // Exact match allowlist
+  if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) return true;
+  // Suffix allowlist (e.g., .vercel.app)
+  if (allowedSuffixes.length > 0) {
+    try {
+      const hostname = new URL(origin).hostname;
+      if (allowedSuffixes.some((suf) => hostname === suf.replace(/^\./, '') || hostname.endsWith(suf))) {
+        return true;
       }
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-  })
-);
+    } catch (_) {
+      // If URL parsing fails, fall back to plain endsWith on the full origin string
+      if (allowedSuffixes.some((suf) => origin.endsWith(suf))) return true;
+    }
+  }
+  return false;
+}
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // ✅ Explicitly handle preflight requests
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // ✅ Middlewares BEFORE routes
 app.use(express.json({ limit: '1mb' }));
