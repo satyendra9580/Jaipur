@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4002';
+const BASE = import.meta.env.VITE_API_BASE_URL || 'https://jaipur.onrender.com';
 
 async function http(path, opts) {
   const res = await fetch(`${BASE}${path}`, {
