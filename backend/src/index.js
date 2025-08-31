@@ -40,6 +40,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running on Render!");
+});
+
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
