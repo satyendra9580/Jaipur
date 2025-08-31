@@ -1,0 +1,63 @@
+{
+  "info": {
+    "_postman_id": "f9ab2a8e-4e3b-4a2e-90bb-1234567890ab",
+    "name": "Candidate Playground API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {"method": "GET", "url": "{{baseUrl}}/health"}
+    },
+    {
+      "name": "Get Profile",
+      "request": {"method": "GET", "url": "{{baseUrl}}/api/profile"}
+    },
+    {
+      "name": "Create Profile",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"name\": \"Your Name\",\n  \"email\": \"your.email@example.com\",\n  \"skills\": [\"javascript\",\"react\"],\n  \"links\": {\"github\": \"https://github.com/you\"}\n}"},
+        "url": "{{baseUrl}}/api/profile"
+      }
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "PUT",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"email\": \"your.email@example.com\",\n  \"summary\": \"Updated summary\"\n}"},
+        "url": "{{baseUrl}}/api/profile"
+      }
+    },
+    {
+      "name": "List Projects by Skill",
+      "request": {"method": "GET", "url": "{{baseUrl}}/api/projects?skill=react"}
+    },
+    {
+      "name": "Search Projects (q)",
+      "request": {"method": "GET", "url": "{{baseUrl}}/api/projects?q=react"}
+    },
+    {
+      "name": "Create Project",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"title\": \"New App\",\n  \"description\": \"Test project\",\n  \"skills\": [\"node\", \"express\"]\n}"},
+        "url": "{{baseUrl}}/api/projects"
+      }
+    },
+    {
+      "name": "Top Skills",
+      "request": {"method": "GET", "url": "{{baseUrl}}/api/skills/top?limit=5"}
+    },
+    {
+      "name": "Search (profile + projects)",
+      "request": {"method": "GET", "url": "{{baseUrl}}/api/search?q=react"}
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:4000"}
+  ]
+}

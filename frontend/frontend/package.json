@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "candidate-frontend": "file:.."
+  }
+}
